@@ -15,10 +15,15 @@ import com.google.firebase.database.FirebaseDatabase;
 public class TodoListActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //database
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+
         setContentView(R.layout.activity_todo_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -29,11 +34,13 @@ public class TodoListActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 //create a new todo !
+                Todo newTodo = new Todo();
+                newTodo.setText("Bonjour les mecs");
+                newTodo.setChecked(false);
                 // Write a message to the database
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("message");
+                String key = databaseReference.child("todos").push().getKey();
 
-                myRef.setValue("Hello, World!");
+                databaseReference.child("todos").child(key).setValue(newTodo);
 
                 Snackbar.make(view, "Todo created !", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -41,6 +48,7 @@ public class TodoListActivity extends AppCompatActivity {
         });
 
         String[] data = new String[]{"Hello","world","youhou","pipipi","couocou"};
+        //should I load the data here ??
         this.recyclerView = (RecyclerView) findViewById(R.id.todorecycler);
         this.recyclerView.setAdapter(new TodoAdapter(data));
     }
