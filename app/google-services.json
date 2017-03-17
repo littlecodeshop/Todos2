@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "320961927867",
+    "firebase_url": "https://todos-b9f86.firebaseio.com",
+    "project_id": "todos-b9f86",
+    "storage_bucket": "todos-b9f86.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320961927867:android:12de42817a0ee6b8",
+        "android_client_info": {
+          "package_name": "com.littlecodeshop.todos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320961927867-up9p8s2d749o6og56l31jaaslem6tm6l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_8StFdLZ8vQpy58WUSmzn_FCLJPlNqDw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

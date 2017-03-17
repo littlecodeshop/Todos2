@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class TodoListActivity extends AppCompatActivity {
 
@@ -25,12 +27,20 @@ public class TodoListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+
+                //create a new todo !
+                // Write a message to the database
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("message");
+
+                myRef.setValue("Hello, World!");
+
+                Snackbar.make(view, "Todo created !", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
 
-        String[] data = new String[]{"Hello","world","youhou"};
+        String[] data = new String[]{"Hello","world","youhou","pipipi","couocou"};
         this.recyclerView = (RecyclerView) findViewById(R.id.todorecycler);
         this.recyclerView.setAdapter(new TodoAdapter(data));
     }
