@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                                        xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/todo_view" app:cardElevation="0dp"
+            app:contentPadding="5dp">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" app:srcCompat="@drawable/france_paris_eiffel_tower"
+                    android:id="@+id/imageView" android:scaleType="centerCrop"/>
+            <TextView
+                    android:text="TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/textView" tools:text="Paris"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
