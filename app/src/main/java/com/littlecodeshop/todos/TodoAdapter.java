@@ -9,6 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.Vector;
+
 /**
  * Created by rribier on 17/03/2017.
  */
@@ -16,10 +23,45 @@ import android.widget.TextView;
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>{
 
     private static final String TAG = "TodoAdapter";
-    private String[] mDataSet;
+    private DatabaseReference mTodosRef;
+    private Vector<String> mTitles;
 
-    public TodoAdapter(String[] mDataSet) {
-        this.mDataSet = mDataSet;
+    public TodoAdapter(DatabaseReference todosRef) {
+        mTitles = new Vector<String>();
+        this.mTodosRef = todosRef;
+        ChildEventListener todosListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded() called with: dataSnapshot = [" + dataSnapshot + "], s = [" + s + "]");
+                Todo todo = dataSnapshot.getValue(Todo.class);
+                mTitles.add(todo.getText());
+                notifyItemInserted(mTitles.size() - 1);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildChanged() called with: dataSnapshot = [" + dataSnapshot + "], s = [" + s + "]");
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved() called with: dataSnapshot = [" + dataSnapshot + "]");
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildMoved() called with: dataSnapshot = [" + dataSnapshot + "], s = [" + s + "]");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled() called with: databaseError = [" + databaseError + "]");
+            }
+        };
+
+        mTodosRef.addChildEventListener(todosListener);
+
     }
 
     @Override
@@ -29,14 +71,13 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>{
                 .inflate(R.layout.todo_item_card, parent, false);
         // set the view's size, margins, paddings and layout parameters
 
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.getTextView().setText(mDataSet[position]);
+        holder.getTextView().setText(mTitles.elementAt(position));
         holder.getImageView().setImageResource(R.drawable.france_paris_eiffel_tower);
     }
 
@@ -47,7 +88,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>{
      */
     @Override
     public int getItemCount() {
-        return mDataSet.length;
+        return mTitles.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
