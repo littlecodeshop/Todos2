@@ -36,12 +36,20 @@ public class TodoListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                //scroll the recycler
+                recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount());
+
                 //create a new todo !
                 Todo newTodo = new Todo();
-                newTodo.setText("Bonjour les mecs");
-                newTodo.setChecked(false);
+
                 // Write a message to the database
                 String key = todoRef.push().getKey();
+
+                newTodo.setText("Change me");
+                newTodo.setChecked(false);
+
+                //est ce que ca va rajouter ??
+
 
                 todoRef.child(key).setValue(newTodo);
 

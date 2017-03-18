@@ -14,7 +14,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by rribier on 17/03/2017.
@@ -24,29 +25,44 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>{
 
     private static final String TAG = "TodoAdapter";
     private DatabaseReference mTodosRef;
-    private Vector<String> mTitles;
+
+    //we store the todos in a map
+    private HashMap<String, Todo> mTodos;
+    private ArrayList<String> mTodoKeys;
 
     public TodoAdapter(DatabaseReference todosRef) {
-        mTitles = new Vector<String>();
+        mTodos = new HashMap<>();
+        mTodoKeys = new ArrayList<>();
         this.mTodosRef = todosRef;
         ChildEventListener todosListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildAdded() called with: dataSnapshot = [" + dataSnapshot + "], s = [" + s + "]");
                 Todo todo = dataSnapshot.getValue(Todo.class);
-                mTitles.add(todo.getText());
-                notifyItemInserted(mTitles.size() - 1);
+                mTodos.put(dataSnapshot.getKey(), todo);
+                mTodoKeys.add(dataSnapshot.getKey());
+                Log.d(TAG, "onChildAdded: " + mTodos.toString());
+                notifyItemInserted(mTodoKeys.size() - 1);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Log.d(TAG, "onChildChanged() called with: dataSnapshot = [" + dataSnapshot + "], s = [" + s + "]");
+                Todo todo = dataSnapshot.getValue(Todo.class);
+                mTodos.put(dataSnapshot.getKey(), todo);
+                //should update the data
+                notifyDataSetChanged();
 
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onChildRemoved() called with: dataSnapshot = [" + dataSnapshot + "]");
+                //retirer de la liste
+                Todo todo = dataSnapshot.getValue(Todo.class);
+                mTodos.remove(dataSnapshot.getKey());
+                mTodoKeys.remove(dataSnapshot.getKey());
+                notifyDataSetChanged();
             }
 
             @Override
@@ -77,7 +93,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>{
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.getTextView().setText(mTitles.elementAt(position));
+
+        String key = mTodoKeys.get(position);
+        holder.getTextView().setText(mTodos.get(key).getText());
         holder.getImageView().setImageResource(R.drawable.france_paris_eiffel_tower);
     }
 
@@ -88,7 +106,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder>{
      */
     @Override
     public int getItemCount() {
-        return mTitles.size();
+        return mTodos.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

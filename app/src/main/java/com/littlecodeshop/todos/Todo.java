@@ -4,6 +4,7 @@ package com.littlecodeshop.todos;
  * Created by rribier on 17/03/2017.
  */
 public class Todo {
+
     private String text;
     private Boolean checked;
 
