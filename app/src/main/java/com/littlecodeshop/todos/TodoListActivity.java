@@ -6,23 +6,64 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class TodoListActivity extends AppCompatActivity {
 
+    private static final String TAG = "TodoListActivity";
     private RecyclerView recyclerView;
-    private DatabaseReference databaseReference;
+    private DatabaseReference todoRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //database
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        todoRef = FirebaseDatabase.getInstance().getReference("todos");
+
+        //load the todos
+        ChildEventListener todosListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded() called with: dataSnapshot = [" + dataSnapshot + "], s = [" + s + "]");
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildChanged() called with: dataSnapshot = [" + dataSnapshot + "], s = [" + s + "]");
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved() called with: dataSnapshot = [" + dataSnapshot + "]");
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildMoved() called with: dataSnapshot = [" + dataSnapshot + "], s = [" + s + "]");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled() called with: databaseError = [" + databaseError + "]");
+            }
+        };
+
+        todoRef.addChildEventListener(todosListener);
+
+
+
+
 
         setContentView(R.layout.activity_todo_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -38,9 +79,9 @@ public class TodoListActivity extends AppCompatActivity {
                 newTodo.setText("Bonjour les mecs");
                 newTodo.setChecked(false);
                 // Write a message to the database
-                String key = databaseReference.child("todos").push().getKey();
+                String key = todoRef.push().getKey();
 
-                databaseReference.child("todos").child(key).setValue(newTodo);
+                todoRef.child(key).setValue(newTodo);
 
                 Snackbar.make(view, "Todo created !", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();

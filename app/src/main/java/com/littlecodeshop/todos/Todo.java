@@ -24,4 +24,12 @@ public class Todo {
     public void setChecked(Boolean checked) {
         this.checked = checked;
     }
+
+    @Override
+    public String toString() {
+        return "Todo{" +
+                "text='" + text + '\'' +
+                ", checked=" + checked +
+                '}';
+    }
 }
