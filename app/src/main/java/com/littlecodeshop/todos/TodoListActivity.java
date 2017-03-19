@@ -1,14 +1,18 @@
 package com.littlecodeshop.todos;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,19 +43,44 @@ public class TodoListActivity extends AppCompatActivity {
                 //scroll the recycler
                 recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount());
 
-                //create a new todo !
-                Todo newTodo = new Todo();
+
 
                 // Write a message to the database
                 String key = todoRef.push().getKey();
 
-                newTodo.setText("Change me");
-                newTodo.setChecked(false);
 
                 //est ce que ca va rajouter ??
 
 
-                todoRef.child(key).setValue(newTodo);
+                final EditText input = new EditText(view.getContext());
+                final String thekey = key;
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(TodoListActivity.this);
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String value = input.getText().toString();
+                        Log.d(TAG, "onClick: " + value);
+                        //create a new todo !
+                        Todo newTodo = new Todo();
+                        newTodo.setText(value);
+                        newTodo.setChecked(false);
+
+                        //here I update the text of todo
+                        todoRef.child(thekey).setValue(newTodo);
+                        Log.d(TAG, "onClick TODO : " + newTodo);
+
+
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.setTitle("Train plan name");
+                alert.setMessage("enter a name:");
+                alert.setView(input);
+
+
+                alert.show();
+
+
 
                 Snackbar.make(view, "Todo created !", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
