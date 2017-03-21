@@ -3,7 +3,6 @@ package com.littlecodeshop.todos;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -44,8 +43,7 @@ public class TodoListActivity extends AppCompatActivity {
                 recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount());
 
 
-
-                // Write a message to the database
+                // ajoute un node a la DB
                 String key = todoRef.push().getKey();
 
 
@@ -68,22 +66,18 @@ public class TodoListActivity extends AppCompatActivity {
                         //here I update the text of todo
                         todoRef.child(thekey).setValue(newTodo);
                         Log.d(TAG, "onClick TODO : " + newTodo);
-
-
                     }
                 });
                 AlertDialog alert = builder.create();
-                alert.setTitle("Train plan name");
-                alert.setMessage("enter a name:");
+                alert.setTitle("Nouveau");
+                alert.setMessage("Todo:");
                 alert.setView(input);
 
 
+
                 alert.show();
+                input.requestFocus();
 
-
-
-                Snackbar.make(view, "Todo created !", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
             }
         });
 
