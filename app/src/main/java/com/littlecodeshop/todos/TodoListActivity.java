@@ -1,7 +1,9 @@
 package com.littlecodeshop.todos;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -20,11 +22,14 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 
 import static com.google.android.gms.location.places.Places.PlaceDetectionApi;
 
@@ -34,10 +39,23 @@ public class TodoListActivity extends AppCompatActivity implements GoogleApiClie
     private RecyclerView recyclerView;
     private DatabaseReference todoRef;
     private GoogleApiClient mGoogleApiClient;
+    private ArrayList<Place> mPlaces;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        Log.d(TAG, "onCreate() called with: savedInstanceState = [" + savedInstanceState + "]");
+        try {
+            String versionName = getPackageManager().getPackageInfo("com.google.android.gms", 0).versionName;
+
+            Log.d(TAG, "onCreate -> "+versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        //create the array to keep the places
+        mPlaces = new ArrayList<>();
 
         //maps stuff
         mGoogleApiClient = new GoogleApiClient
@@ -68,6 +86,7 @@ public class TodoListActivity extends AppCompatActivity implements GoogleApiClie
                     Log.i(TAG, String.format("Place '%s' has likelihood: %g",
                             placeLikelihood.getPlace().getName(),
                             placeLikelihood.getLikelihood()));
+                    mPlaces.add(placeLikelihood.getPlace());
                 }
                 likelyPlaces.release();
             }
@@ -116,7 +135,7 @@ public class TodoListActivity extends AppCompatActivity implements GoogleApiClie
                     }
                 });
                 AlertDialog alert = builder.create();
-                alert.setTitle("Nouveau");
+                alert.setTitle("Nouveau truc");
                 alert.setMessage("Todo:");
                 alert.setView(input);
 
@@ -150,6 +169,9 @@ public class TodoListActivity extends AppCompatActivity implements GoogleApiClie
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent view = new Intent(this,PlaceActivity.class);
+
+            startActivity(view);
             return true;
         }
 
