@@ -67,7 +67,7 @@ public class PlacesAdapter extends RecyclerView.Adapter <PlacesAdapter.ViewHolde
                             placeLikelihood.getPlace().getName(),
                             placeLikelihood.getLikelihood()));
                     Place p = placeLikelihood.getPlace();
-                    mPlaces.add(new LikePlace(p.getId(),p.getName().toString()));
+                    mPlaces.add(new LikePlace(p.getId(), p.getName().toString(), p.getRating()));
 
                     notifyDataSetChanged();
 
@@ -96,10 +96,10 @@ public class PlacesAdapter extends RecyclerView.Adapter <PlacesAdapter.ViewHolde
         placePhotosTask(holder.getImageView(), aplace.getId());
 
 
-        Log.i(TAG, "onBindViewHolder: "+aplace.getName());
+        Log.i(TAG, "onBindViewHolder: " + aplace.getName() + ": " + aplace.getRating());
         Log.d(TAG, "onBindViewHolder() called with: holder = [" + holder + "], position = [" + position + "]");
 
-        holder.getTextView().setText(mPlaces.get(position).getName());
+        holder.getTextView().setText(mPlaces.get(position).getName() + " : " + aplace.getRating());
 
     }
 
@@ -123,7 +123,7 @@ public class PlacesAdapter extends RecyclerView.Adapter <PlacesAdapter.ViewHolde
             @Override
             protected void onPreExecute() {
                 // Display a temporary image to show while bitmap is loading.
-                mImageView.setImageResource(R.drawable.common_full_open_on_phone);
+                mImageView.setImageResource(R.drawable.france_paris_eiffel_tower);
             }
 
             @Override

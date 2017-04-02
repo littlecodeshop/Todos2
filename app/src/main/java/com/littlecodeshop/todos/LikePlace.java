@@ -8,10 +8,13 @@ public class LikePlace {
 
     private String name;
     private String id;
+    private float rating;
 
-    public LikePlace(String id, String name) {
+    public LikePlace(String id, String name, float rating) {
         this.name = name;
         this.id = id;
+        this.rating = rating;
+
     }
 
     public String getId() {
@@ -20,6 +23,10 @@ public class LikePlace {
 
     public String getName() {
         return name;
+    }
+
+    public float getRating() {
+        return rating;
     }
 
 
