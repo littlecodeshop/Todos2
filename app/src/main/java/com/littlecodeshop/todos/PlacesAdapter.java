@@ -1,6 +1,5 @@
 package com.littlecodeshop.todos;
 
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -92,13 +91,16 @@ public class PlacesAdapter extends RecyclerView.Adapter <PlacesAdapter.ViewHolde
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        LikePlace aplace  = (LikePlace) mPlaces.get(position);
+        LikePlace aplace = mPlaces.get(position);
+
+        placePhotosTask(holder.getImageView(), aplace.getId());
+
 
         Log.i(TAG, "onBindViewHolder: "+aplace.getName());
         Log.d(TAG, "onBindViewHolder() called with: holder = [" + holder + "], position = [" + position + "]");
 
         holder.getTextView().setText(mPlaces.get(position).getName());
-        holder.getImageView().setImageResource(R.drawable.france_paris_eiffel_tower);
+
     }
 
     @Override
@@ -110,6 +112,40 @@ public class PlacesAdapter extends RecyclerView.Adapter <PlacesAdapter.ViewHolde
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+
+    private void placePhotosTask(ImageView view, String id) {
+        final String placeId = id; // Australian Cruise Group
+        final ImageView mImageView = view;
+
+        // Create a new AsyncTask that displays the bitmap and attribution once loaded.
+        new PhotoTask(mGoogleApiClient, 300, 200) {
+            @Override
+            protected void onPreExecute() {
+                // Display a temporary image to show while bitmap is loading.
+                mImageView.setImageResource(R.drawable.common_full_open_on_phone);
+            }
+
+            @Override
+            protected void onPostExecute(AttributedPhoto attributedPhoto) {
+                if (attributedPhoto != null) {
+                    // Photo has been loaded, display it.
+                    mImageView.setImageBitmap(attributedPhoto.bitmap);
+
+                    // Display the attribution as HTML content if set.
+                    if (attributedPhoto.attribution == null) {
+                        //mText.setVisibility(View.GONE);
+                    } else {
+                        //mText.setVisibility(View.VISIBLE);
+                        //mText.setText(Html.fromHtml(attributedPhoto.attribution.toString()));
+                    }
+
+                }
+            }
+        }.execute(placeId);
+    }
+
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
